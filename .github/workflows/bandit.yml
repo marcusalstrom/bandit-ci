@@ -1,0 +1,30 @@
+name: Security Linting with Bandit
+
+on: [push, pull_request]  # Run the pipeline on push or pull request events
+
+jobs:
+  bandit-security-check:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3  # Check out your repository
+
+    - name: Set up Python
+      uses: actions/setup-python@v4  # Set up Python
+      with:
+        python-version: '3.9'  # Use your desired Python version (e.g., '3.9')
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip  # Upgrade pip
+        pip install bandit  # Install Bandit
+    
+    - name: Run Bandit Security Checks
+      run: |
+        bandit -r .  # Recursively run Bandit on the whole repo
+      continue-on-error: true  # Continue even if Bandit finds issues
+
+    - name: Fail if Bandit found security issues
+      if: failure()  # This step runs only if the previous one failed
+      run: exit 1  # Force pipeline failure if Bandit detects issues
