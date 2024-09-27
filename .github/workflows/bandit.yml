@@ -23,8 +23,3 @@ jobs:
     - name: Run Bandit Security Checks
       run: |
         bandit -r .  # Recursively run Bandit on the whole repo
-      continue-on-error: true  # Continue even if Bandit finds issues
-
-    - name: Fail if Bandit found security issues
-      if: failure()  # This step runs only if the previous one failed
-      run: exit 1  # Force pipeline failure if Bandit detects issues
